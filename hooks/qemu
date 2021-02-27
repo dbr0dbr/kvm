@@ -1,0 +1,23 @@
+#!/bin/bash
+if [ "$1" = "win10-efi" ]; then
+  if [ "$2" = start ]; then
+	runuser -l andc -c 'export DISPLAY=:0; /usr/bin/xrandr --output VGA-1 --off'
+  elif [ "$2" = stopped ]; then
+	runuser -l andc -c 'export DISPLAY=:0; /usr/bin/xrandr --output VGA-1 --auto'
+  elif [ "$2" = release ] && [ "$3" = end ]; then
+	bash /home/andc/test.sh
+  fi
+fi
+
+if [ "$1" = "win7-efi" ]; then
+  if [ "$2" = start ]; then
+	runuser -l andc -c 'export DISPLAY=:0; /usr/bin/xrandr --output VGA-1 --off'
+  elif [ "$2" = stopped ]; then
+	runuser -l andc -c 'export DISPLAY=:0; /usr/bin/xrandr --output VGA-1 --auto'
+  elif [ "$2" = release ] && [ "$3" = end ]; then
+	bash /home/andc/test.sh
+  fi
+fi
+
+if [ "$2" = start ]; then nohup /etc/libvirt/hooks/make_all_ips_static.sh $@> /dev/null 2>&1 & 	 fi
+

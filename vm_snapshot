@@ -1,0 +1,52 @@
+#!/bin/bash
+if [ -z $2 ]; then 
+  echo -e "usage: vm_snamshot [key] vm_name1 vm_name2 ..."
+  echo '  -c	 	for create snapshot'
+  echo '  -l	 	for load last snapshot'
+  echo '  -d	 	for delete last snapshot'
+  echo '  --list 	for list snapshots'
+  exit 1
+fi
+host=192.168.121.1
+arg=$1
+#mac_cmd="virsh dumpxml $vm_name |grep 'mac add' |awk -F \"'\" '{print \$2}'"
+#mac=`ssh root@$host "$mac_cmd"`
+#echo "connect to $vm_name"
+#echo "mac : '$mac'"
+#ip_cmd="arp -a |grep $mac |awk -F '(' '{print \$2}' |awk -F ')' '{print \$1}'"
+#ip=`arp -a |grep $mac |awk -F '(' '{print $2}' |awk -F ')' '{print $1}'`
+#ip=`ssh root@$host "$ip_cmd"`
+#echo "ip  : '$ip'"
+shift
+echo "$@"
+if [[ $arg == -c ]]; then
+  for vm_name in $@; do
+    echo "create snapshot for $vm_name..."
+    ssh root@$host "virsh snapshot-create $vm_name"
+    echo "ok"
+  done
+fi
+
+if [[ $arg == -l ]]; then
+  for vm_name in $@; do
+    echo "laod snapshot for $vm_name..."
+    ssh root@$host "virsh snapshot-revert --domain $vm_name --current"
+    echo "ok"
+  done
+fi
+
+if [[ $arg == -d ]]; then
+  for vm_name in $@; do
+    echo "delete last snapshot for $vm_name..."
+    ssh root@$host "virsh snapshot-delete --domain $vm_name --current"
+    echo "ok"
+  done
+fi
+
+if [[ $arg == --list ]]; then
+  for vm_name in $@; do
+    echo "list snapshots for $vm_name:"
+    ssh root@$host "virsh snapshot-list --domain $vm_name"
+  done
+fi
+
