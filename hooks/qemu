@@ -24,6 +24,11 @@ if [ "$2" = start ]; then nohup /etc/libvirt/hooks/make_all_ips_static.sh $@> /d
 if [ "$1" = "centos7.0" ]; then
   if [ "$2" = started ]; then
     port=`ps -ef |grep libvirt+ |grep centos7.0 | head -1| awk -F 'spice port=' '{print $2}'| awk -F ',' '{print $1}'`
-    runuser -l andc -c "export DISPLAY=:0; remote-viewer spice://127.0.0.1:$port"
+    echo "runuser -l andc -c export DISPLAY=:0; remote-viewer spice://127.0.0.1:$port" >> /tmp/log
+    nohup runuser -l andc -c "export DISPLAY=:0; remote-viewer spice://127.0.0.1:$port" > /dev/null 2>&1 &
+  elif [ "$2" = release ] && [ "$3" = end ]; then
+    runuser -l andc -c "export DISPLAY=:0; export PULSE_RUNTIME_PATH='/run/user/1000/pulse/'; pactl set-card-profile 0 output:analog-stereo "
   fi
 fi
+
+
