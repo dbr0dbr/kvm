@@ -21,3 +21,9 @@ fi
 
 if [ "$2" = start ]; then nohup /etc/libvirt/hooks/make_all_ips_static.sh $@> /dev/null 2>&1 & 	 fi
 
+if [ "$1" = "centos7.0" ]; then
+  if [ "$2" = started ]; then
+    port=`ps -ef |grep libvirt+ |grep centos7.0 | head -1| awk -F 'spice port=' '{print $2}'| awk -F ',' '{print $1}'`
+    runuser -l andc -c "export DISPLAY=:0; remote-viewer spice://127.0.0.1:$port"
+  fi
+fi
